@@ -32,12 +32,16 @@ var map = L.map('map').setView([43.1594, -79.2469], 12);
     var marker = L.marker([43.1594, -79.2469]).addTo(map);
     
 
-    var m2 = L.marker([43.1594, -79.3269]);
+    var m2 = L.marker();
     var popup = L.popup();
    function onMapClick(e) {
         var latlngstring = e.latlng.toString().replace("LatLng", "");
         m2.setLatLng(e.latlng).addTo(map);
-        m2.bindPopup(latlngstring).openPopup();
+        fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + e.latlng.lat + '&lon=' + e.latlng.lng + '&appid=' + '3b6d051268cd1cbd45eecf77af1a7e44')
+        .then(r => r.json()) 
+        .then(data => {
+            m2.bindPopup(latlngstring + "\n" + data.weather.map(w => w.description)).openPopup()
+        })
     }
     map.on('click', onMapClick);
 
